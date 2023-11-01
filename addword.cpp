@@ -6,6 +6,8 @@ addWord::addWord(QWidget *parent) :
     ui(new Ui::addWord)
 {
     ui->setupUi(this);
+    connect(ui->addWordButton,&QPushButton::clicked,
+            this,&addWord::SlotAddWordButtonClicked);
 }
 
 addWord::~addWord()
@@ -14,9 +16,16 @@ addWord::~addWord()
 }
 void addWord::addWordButtonClicked()
 {
+
+}
+
+
+void addWord::SlotAddWordButtonClicked()
+{
     std::vector<QString> newVec(3);
     newVec[0]= ui->lineEdit->text();
     newVec[1] = ui->lineEdit_2->text();
     newVec[2] = ui->lineEdit_3->text();
     emit SignalAddNewWordToDb(newVec);
 }
+

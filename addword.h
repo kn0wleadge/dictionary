@@ -24,6 +24,8 @@ public slots:
     void addWordButtonClicked();
 signals:
     void SignalAddNewWordToDb(std::vector<QString> vec);
+private slots:
+    void SlotAddWordButtonClicked();
 };
 
 #endif // ADDWORD_H

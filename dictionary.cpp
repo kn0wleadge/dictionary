@@ -10,8 +10,8 @@ dictionary::dictionary(QWidget *parent)
 
     db= QSqlDatabase::addDatabase("QSQLITE");
     db.setDatabaseName("./testDb.db");
-    db.setUserName("db");
-    db.setPassword("qwe");
+    //db.setUserName("db");
+    //db.setPassword("qwe");
     if(!db.open())
     {
         qDebug("not opened");
@@ -21,11 +21,27 @@ dictionary::dictionary(QWidget *parent)
         qDebug("opened");
     }
     dbQ = new QSqlQuery(db);
-    dbQ->exec("CREATE TABLE Dictionary(In english TEXT, In Russian TEXT, Transcription TEXT);");
+    //dbQ->exec("DROP TABLE Dictionary");
+    dbQ->exec("CREATE TABLE Dictionary(InEnglish TEXT, InRussian TEXT, Transcription TEXT);");
+    if(dbQ->isActive())
+    {
+        qDebug("\n active");
+    }
+    else
+    {
+        qDebug("not active");
+        qDebug()<<dbQ->lastError();
+    }
+    dbModel = new QSqlTableModel(this,db);
+    dbModel->setTable("Dictionary");
+    dbModel->select();
 
-//    dbModel = new QSqlTableModel(this,db);
-//    dbModel->setTable("Dictionary");
-//    dbModel->select();
+
+    qDebug()<<dbModel->lastError();
+
+
+    addWordWindow = new addWord(nullptr);
+    wordList = new WordList(nullptr,dbModel);
 
 }
 
@@ -36,23 +52,34 @@ dictionary::~dictionary()
 
 void dictionary::adding(std::vector<QString> someVec)
 {
-    dbModel->insertRow(1);
-    dbModel->setData(dbModel->index(dbModel->rowCount(),0),someVec[0]);
-    dbModel->setData(dbModel->index(dbModel->rowCount(),1),someVec[1]);
-    dbModel->setData(dbModel->index(dbModel->rowCount(),2),someVec[2]);
+    dbQ->prepare("INSERT INTO Dictionary (InEnglish, InRussian, Transcription"
+              "VALUES(:engWord,:rusWord,:transc)");
+    dbQ->bindValue("engWord",someVec[0]);
+    dbQ->bindValue("rusWord",someVec[1]);
+    dbQ->bindValue("transc",someVec[2]);
+    dbQ->exec();
+    qDebug()<<dbQ->lastError();
 
 }
 void dictionary::on_pushButton_clicked()
 {
 
-    addWord* addWordWindow = new addWord();
+
     connect(addWordWindow, SIGNAL(SignalAddNewWordToDb(std::vector)),this,SLOT(adding(std::vector)));
     addWordWindow->show();
-    dbModel = new QSqlTableModel(addWordWindow,db);
-    dbModel->setTable("Dictionary");
-    dbModel->select();
 
 
+
+
+
+}
+
+
+void dictionary::on_pushButton_3_clicked()
+{
+
+
+    wordList->show();
 
 
 }

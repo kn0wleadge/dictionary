@@ -26,6 +26,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         ${PROJECT_SOURCES}
         includes.h
         addword.h addword.cpp addword.ui
+        wordlist.h wordlist.cpp wordlist.ui
 
     )
 # Define target properties for Android with Qt 6 as:
