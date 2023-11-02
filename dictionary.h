@@ -3,6 +3,7 @@
 
 #include "includes.h"
 #include "addword.h"
+#include "wordlist.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class dictionary; }
@@ -15,10 +16,14 @@ class dictionary : public QMainWindow
 public:
     dictionary(QWidget *parent = nullptr);
     ~dictionary();
+public slots:
+    void SlotAdding();
 private slots:
-    void on_pushButton_clicked();
+    void openAddWordWindow();
     //void addNewWordToDatabase();
-    void adding(std::vector<QString> someVec);
+
+
+    void on_pushButton_3_clicked();
 
 private:
     Ui::dictionary *ui;
@@ -29,7 +34,9 @@ private:
     QSqlQuery* dbQ;
     QSqlTableModel* dbModel;
 
-    QWidget* addWordWindow;
+    //QWidget* addWordWindow;
+    addWord* addWordWindow;
+    WordList* wordList;
 
 
 };
