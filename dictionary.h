@@ -16,10 +16,12 @@ class dictionary : public QMainWindow
 public:
     dictionary(QWidget *parent = nullptr);
     ~dictionary();
+public slots:
+    void SlotAdding();
 private slots:
-    void on_pushButton_clicked();
+    void openAddWordWindow();
     //void addNewWordToDatabase();
-    void adding(std::vector<QString> someVec);
+
 
     void on_pushButton_3_clicked();
 

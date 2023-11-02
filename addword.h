@@ -15,15 +15,18 @@ public:
     explicit addWord(QWidget *parent = nullptr);
     ~addWord();
 
+    std::vector<QString> getNewWord();
+
 private:
     Ui::addWord *ui;
+    std::vector<QString> newWord;
 //    QString rus;
 //    QString eng;
 //    QString trc;
-public slots:
-    void addWordButtonClicked();
+
+
 signals:
-    void SignalAddNewWordToDb(std::vector<QString> vec);
+    void SignalAddNewWordToDb();
 private slots:
     void SlotAddWordButtonClicked();
 };

@@ -5,13 +5,14 @@
 dictionary::dictionary(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::dictionary)
+    ,addWordWindow(new addWord(nullptr))
 {
     ui->setupUi(this);
-
+    bool connectOpenAddWordWindow = connect(this->ui->pushButton,this->ui->pushButton->clicked,this,dictionary::openAddWordWindow);
+    bool connectAddingWord = connect(addWordWindow,&addWord::SignalAddNewWordToDb,this,&dictionary::SlotAdding);
+    qDebug()<<connectOpenAddWordWindow << connectAddingWord;
     db= QSqlDatabase::addDatabase("QSQLITE");
     db.setDatabaseName("./testDb.db");
-    //db.setUserName("db");
-    //db.setPassword("qwe");
     if(!db.open())
     {
         qDebug("not opened");
@@ -21,7 +22,6 @@ dictionary::dictionary(QWidget *parent)
         qDebug("opened");
     }
     dbQ = new QSqlQuery(db);
-    //dbQ->exec("DROP TABLE Dictionary");
     dbQ->exec("CREATE TABLE Dictionary(InEnglish TEXT, InRussian TEXT, Transcription TEXT);");
     if(dbQ->isActive())
     {
@@ -50,37 +50,28 @@ dictionary::~dictionary()
     delete ui;
 }
 
-void dictionary::adding(std::vector<QString> someVec)
+void dictionary::SlotAdding()
 {
+    qDebug()<<"new word adding connected";
+    std::vector<QString> newWord = this->addWordWindow->getNewWord();
     dbQ->prepare("INSERT INTO Dictionary (InEnglish, InRussian, Transcription"
               "VALUES(:engWord,:rusWord,:transc)");
-    dbQ->bindValue("engWord",someVec[0]);
-    dbQ->bindValue("rusWord",someVec[1]);
-    dbQ->bindValue("transc",someVec[2]);
+    dbQ->bindValue("engWord",newWord[0]);
+    dbQ->bindValue("rusWord",newWord[1]);
+    dbQ->bindValue("transc",newWord[2]);
     dbQ->exec();
     qDebug()<<dbQ->lastError();
 
 }
-void dictionary::on_pushButton_clicked()
+void dictionary::openAddWordWindow()
 {
-
-
-    connect(addWordWindow, SIGNAL(SignalAddNewWordToDb(std::vector)),this,SLOT(adding(std::vector)));
+    qDebug()<<"addWord window opening connected";
     addWordWindow->show();
-
-
-
-
-
 }
 
 
 void dictionary::on_pushButton_3_clicked()
 {
-
-
-    wordList->show();
-
-
+  wordList->show();
 }
 
