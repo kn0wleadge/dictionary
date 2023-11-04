@@ -14,7 +14,7 @@
    <string>dictionary</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>0</x>
@@ -25,14 +25,14 @@
     </property>
     <layout class="QGridLayout" name="gridLayout">
      <item row="0" column="1">
-      <widget class="QPushButton" name="pushButton_3">
+      <widget class="QPushButton" name="wordListButton">
        <property name="text">
         <string>Check words</string>
        </property>
       </widget>
      </item>
      <item row="0" column="0">
-      <widget class="QPushButton" name="pushButton">
+      <widget class="QPushButton" name="addWordButton">
        <property name="text">
         <string>Add word</string>
        </property>

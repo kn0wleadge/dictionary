@@ -20,10 +20,8 @@ public slots:
     void SlotAdding();
 private slots:
     void openAddWordWindow();
+    void openWordListWindow();
     //void addNewWordToDatabase();
-
-
-    void on_pushButton_3_clicked();
 
 private:
     Ui::dictionary *ui;
