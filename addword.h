@@ -14,11 +14,11 @@ class addWord : public QWidget
 public:
     explicit addWord(QWidget *parent = nullptr);
     ~addWord();
-
+    Ui::addWord *ui;
     std::vector<QString> getNewWord();
 
 private:
-    Ui::addWord *ui;
+
     std::vector<QString> newWord;
 //    QString rus;
 //    QString eng;
@@ -27,6 +27,7 @@ private:
 
 signals:
     void SignalAddNewWordToDb();
+
 private slots:
     void SlotAddWordButtonClicked();
 };

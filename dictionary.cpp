@@ -8,9 +8,14 @@ dictionary::dictionary(QWidget *parent)
     ,addWordWindow(new addWord(nullptr))
 {
     ui->setupUi(this);
-    bool connectOpenAddWordWindow = connect(this->ui->pushButton,this->ui->pushButton->clicked,this,dictionary::openAddWordWindow);
-    bool connectAddingWord = connect(addWordWindow,&addWord::SignalAddNewWordToDb,this,&dictionary::SlotAdding);
-    qDebug()<<connectOpenAddWordWindow << connectAddingWord;
+    bool connectOpenAddWordWindow = connect(this->ui->addWordButton,&QPushButton::clicked,
+                                            this,dictionary::openAddWordWindow);
+    bool connectOpenWordListWindow = connect(this->ui->wordListButton,&QPushButton::clicked,
+                                             this,&dictionary::openWordListWindow);
+    bool connectInsertingWord = connect(this->addWordWindow,&addWord::SignalAddNewWordToDb,
+                                        this,&dictionary::SlotAdding);
+    qDebug()<<connectOpenAddWordWindow<<connectOpenWordListWindow << connectInsertingWord;
+
     db= QSqlDatabase::addDatabase("QSQLITE");
     db.setDatabaseName("./testDb.db");
     if(!db.open())
@@ -22,7 +27,7 @@ dictionary::dictionary(QWidget *parent)
         qDebug("opened");
     }
     dbQ = new QSqlQuery(db);
-    dbQ->exec("CREATE TABLE Dictionary(InEnglish TEXT, InRussian TEXT, Transcription TEXT);");
+    dbQ->exec("CREATE TABLE dictionary(InEnglish TEXT, InRussian TEXT, Transcription TEXT);");
     if(dbQ->isActive())
     {
         qDebug("\n active");
@@ -30,18 +35,9 @@ dictionary::dictionary(QWidget *parent)
     else
     {
         qDebug("not active");
-        qDebug()<<dbQ->lastError();
+        qDebug()<<"database query error"<<dbQ->lastError();
     }
-    dbModel = new QSqlTableModel(this,db);
-    dbModel->setTable("Dictionary");
-    dbModel->select();
 
-
-    qDebug()<<dbModel->lastError();
-
-
-    addWordWindow = new addWord(nullptr);
-    wordList = new WordList(nullptr,dbModel);
 
 }
 
@@ -54,8 +50,8 @@ void dictionary::SlotAdding()
 {
     qDebug()<<"new word adding connected";
     std::vector<QString> newWord = this->addWordWindow->getNewWord();
-    dbQ->prepare("INSERT INTO Dictionary (InEnglish, InRussian, Transcription"
-              "VALUES(:engWord,:rusWord,:transc)");
+    qDebug()<<newWord[0]<<newWord[1]<<newWord[2];
+    dbQ->prepare("INSERT INTO Dictionary (InEnglish, InRussian, Transcription) VALUES(:engWord,:rusWord,:transc);");
     dbQ->bindValue("engWord",newWord[0]);
     dbQ->bindValue("rusWord",newWord[1]);
     dbQ->bindValue("transc",newWord[2]);
@@ -70,8 +66,15 @@ void dictionary::openAddWordWindow()
 }
 
 
-void dictionary::on_pushButton_3_clicked()
+void dictionary::openWordListWindow()
 {
+    dbModel= new QSqlTableModel(this,this->db);
+    dbModel->setTable("dictionary");
+    qDebug()<<"database model error"<<dbModel->lastError();
+
+    wordList = new WordList(nullptr,dbModel);
+    qDebug()<<"wordList window opening connected";
+
   wordList->show();
 }
 

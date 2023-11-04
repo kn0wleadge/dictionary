@@ -27,10 +27,12 @@ void addWord::SlotAddWordButtonClicked()
     newVec[1] = ui->lineEdit_2->text();
     newVec[2] = ui->lineEdit_3->text();
     this->newWord = newVec;
-    emit this->SignalAddNewWordToDb();
+    emit SignalAddNewWordToDb();
+    qDebug()<<"addWord button ended work";
 
 }
 std::vector<QString> addWord::getNewWord()
 {
     return this->newWord;
 }
+
